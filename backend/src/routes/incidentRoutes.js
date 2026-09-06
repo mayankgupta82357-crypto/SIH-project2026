@@ -1,0 +1,10 @@
+﻿import { Router } from "express";
+import { getIncidents, getIncidentById, createIncident, updateIncident, updateIncidentStatus, assignUnit, deleteIncident } from "../controllers/incidentController.js";
+export const incidentRoutes = Router();
+incidentRoutes.get("/", getIncidents);
+incidentRoutes.get("/:id", getIncidentById);
+incidentRoutes.post("/", createIncident);
+incidentRoutes.put("/:id", updateIncident);
+incidentRoutes.patch("/:id/status", updateIncidentStatus);
+incidentRoutes.post("/:id/assign-unit", assignUnit);
+incidentRoutes.delete("/:id", deleteIncident);
