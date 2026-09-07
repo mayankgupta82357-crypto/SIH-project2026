@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShieldAlert, Lock, Mail, ArrowRight, UserCheck, CheckCircle2 } from "lucide-react";
+import { ShieldAlert, Lock, Mail, ArrowRight, UserCheck, CheckCircle2, AlertTriangle, KeyRound } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 export const Login = () => {
@@ -137,8 +137,12 @@ export const Login = () => {
           </div>
 
           {error && (
-            <div className="p-3 rounded-lg bg-red-500/15 border border-red-500/30 text-red-400 text-xs">
-              {error}
+            <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 text-xs flex items-start gap-2.5 shadow-lg shadow-red-500/10">
+              <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="font-bold text-red-200">Authentication Failed</p>
+                <p className="mt-0.5 text-[11px] text-red-300/90 leading-relaxed">{error}</p>
+              </div>
             </div>
           )}
 
@@ -150,9 +154,10 @@ export const Login = () => {
                 <input
                   type="email"
                   required
+                  placeholder="e.g. operator@urbancascade.gov"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-lg bg-dark-950 border border-white/10 text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-lg bg-dark-950 border border-white/10 text-white focus:outline-none focus:border-cyan-500 placeholder-slate-500"
                 />
               </div>
             </div>
@@ -164,9 +169,10 @@ export const Login = () => {
                 <input
                   type="password"
                   required
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-lg bg-dark-950 border border-white/10 text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-lg bg-dark-950 border border-white/10 text-white focus:outline-none focus:border-cyan-500 placeholder-slate-500"
                 />
               </div>
             </div>
@@ -179,6 +185,18 @@ export const Login = () => {
               {loading ? "Authenticating..." : "Sign In to Operations"}
             </button>
           </form>
+
+          {/* Authorized Demo Logins Card */}
+          <div className="p-3 rounded-xl bg-dark-950/80 border border-white/10 space-y-1.5 text-[11px] font-mono">
+            <div className="text-[10px] uppercase font-bold text-cyan-400 tracking-wider flex items-center gap-1.5">
+              <KeyRound className="w-3.5 h-3.5" /> Valid Demo Logins (Password: password123)
+            </div>
+            <div className="grid grid-cols-1 gap-1 text-[10px] text-slate-400">
+              <div>• <span className="text-emerald-400 font-semibold">Citizen:</span> citizen@urbancascade.gov</div>
+              <div>• <span className="text-blue-400 font-semibold">Operator:</span> operator@urbancascade.gov</div>
+              <div>• <span className="text-cyan-400 font-semibold">Admin:</span> admin@urbancascade.gov</div>
+            </div>
+          </div>
 
           <div className="text-center text-xs text-slate-400">
             Don't have an account?{" "}

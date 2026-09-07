@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShieldAlert, Lock, Mail, User, Shield } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -49,8 +49,12 @@ export const Register = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
         <div className="bg-dark-900 border border-white/10 py-8 px-6 shadow-2xl rounded-2xl sm:px-10 space-y-5">
           {error && (
-            <div className="p-3 rounded-lg bg-red-500/15 border border-red-500/30 text-red-400 text-xs">
-              {error}
+            <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 text-xs flex items-start gap-2.5 shadow-lg shadow-red-500/10">
+              <ShieldAlert className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="font-bold text-red-200">Registration Failed</p>
+                <p className="mt-0.5 text-[11px] text-red-300/90 leading-relaxed">{error}</p>
+              </div>
             </div>
           )}
 

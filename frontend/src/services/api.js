@@ -5,7 +5,9 @@ import {
   getLocalAlerts,
   saveLocalAlert,
   getLocalReports,
-  saveLocalCitizenReport
+  saveLocalCitizenReport,
+  getLocalUsers,
+  saveLocalUser
 } from "./localDb.js";
 
 const apiClient = axios.create({
@@ -30,18 +32,49 @@ export const authAPI = {
     try {
       const res = await apiClient.post("/auth/login", credentials);
       if (res.data && res.data.success) return res.data;
-    } catch (err) {}
+      if (res.data && res.data.message) return { success: false, message: res.data.message };
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        return { success: false, message: err.response.data.message };
+      }
+    }
+
+    // Client-side Database Validation (for Vercel Static & Offline modes)
+    const email = (credentials.email || "").trim().toLowerCase();
+    const password = (credentials.password || "").trim();
+
+    if (!email) {
+      return { success: false, message: "Please enter your email address." };
+    }
+    if (!password) {
+      return { success: false, message: "Please enter your password." };
+    }
+
+    const users = getLocalUsers();
+    const foundUser = users.find(
+      (u) => (u.email || "").toLowerCase() === email
+    );
+
+    if (!foundUser) {
+      return {
+        success: false,
+        message: `Account not found with email '${credentials.email}'. Please enter a valid registered email or use 1-Click Instant Sign In.`
+      };
+    }
+
+    if (foundUser.password && foundUser.password !== password) {
+      return {
+        success: false,
+        message: "Incorrect password! For demo accounts, the password is 'password123'."
+      };
+    }
+
+    // Success: return safe user without password
+    const { password: _, ...safeUser } = foundUser;
     return {
       success: true,
-      token: "demo_token_" + Date.now(),
-      user: {
-        id: "usr-demo",
-        name: "Authorized Operator",
-        email: credentials.email || "operator@urbancascade.gov",
-        role: "Emergency Operator",
-        badge: "EOC-412",
-        department: "Central Emergency Dispatch"
-      }
+      token: "uc_token_" + Date.now(),
+      user: safeUser
     };
   },
   demoLogin: async (role = "Admin") => {
@@ -49,35 +82,76 @@ export const authAPI = {
       const res = await apiClient.post("/auth/demo-login", { role });
       if (res.data && res.data.success) return res.data;
     } catch (err) {}
+
+    const users = getLocalUsers();
+    const targetRole = (role === "Operator" || role === "Emergency Operator")
+      ? "Emergency Operator"
+      : role;
+
+    const found = users.find(u => u.role?.toLowerCase() === targetRole.toLowerCase())
+      || users.find(u => u.role?.toLowerCase().includes(role.toLowerCase()))
+      || users[0];
+
+    const { password: _, ...safeUser } = found;
     return {
       success: true,
-      token: "demo_token_" + Date.now(),
-      user: {
-        id: "usr-demo-" + role.toLowerCase(),
-        name: role === "Admin" ? "Dr. Rajeshwar Rao (Admin)" : role === "Citizen" ? "Arjun Verma (Citizen)" : "Priya Sharma (Operator)",
-        email: `${role.toLowerCase()}@urbancascade.gov`,
-        role: role,
-        badge: role === "Admin" ? "ADM-994" : role === "Citizen" ? "CIT-882" : "EOC-412",
-        department: role === "Citizen" ? "Public User" : "Urban Command Center"
-      }
+      token: "uc_demo_token_" + Date.now(),
+      user: safeUser
     };
   },
   register: async (data) => {
     try {
       const res = await apiClient.post("/auth/register", data);
       if (res.data && res.data.success) return res.data;
-    } catch (err) {}
+      if (res.data && res.data.message) return { success: false, message: res.data.message };
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        return { success: false, message: err.response.data.message };
+      }
+    }
+
+    const cleanEmail = (data.email || "").trim().toLowerCase();
+    const cleanPassword = (data.password || "").trim();
+    const cleanName = (data.name || "").trim();
+
+    if (!cleanName) {
+      return { success: false, message: "Please provide your full name." };
+    }
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      return { success: false, message: "Please enter a valid email address." };
+    }
+    if (!cleanPassword || cleanPassword.length < 6) {
+      return { success: false, message: "Password must be at least 6 characters." };
+    }
+
+    const users = getLocalUsers();
+    const existing = users.find(u => (u.email || "").toLowerCase() === cleanEmail);
+    if (existing) {
+      return {
+        success: false,
+        message: `An account with email '${data.email}' already exists! Please log in instead.`
+      };
+    }
+
+    const role = data.role || "Citizen";
+    const badgePrefix = role === "Admin" ? "ADM-" : role === "Citizen" ? "CIT-" : "EOC-";
+    const newUser = {
+      id: `usr-${Date.now()}`,
+      name: cleanName,
+      email: cleanEmail,
+      password: cleanPassword,
+      role: role,
+      badge: `${badgePrefix}${Math.floor(100 + Math.random() * 900)}`,
+      department: role === "Citizen" ? "Public Citizen Portal" : role === "Admin" ? "Urban Command Center" : "Central Emergency Dispatch"
+    };
+
+    saveLocalUser(newUser);
+    const { password: _, ...safeUser } = newUser;
+
     return {
       success: true,
-      token: "demo_token_" + Date.now(),
-      user: {
-        id: `usr-${Date.now()}`,
-        name: data.name,
-        email: data.email,
-        role: data.role || "Citizen",
-        badge: "USR-100",
-        department: "Operations"
-      }
+      token: "uc_token_" + Date.now(),
+      user: safeUser
     };
   },
   getMe: async () => {

@@ -119,6 +119,66 @@ const SEED_REPORTS = [
   }
 ];
 
+const SEED_USERS = [
+  {
+    id: "usr-admin-01",
+    name: "Dr. Rajeshwar Rao (Admin)",
+    email: "admin@urbancascade.gov",
+    password: "password123",
+    role: "Admin",
+    badge: "ADM-994",
+    department: "Urban Resilience & Command Center"
+  },
+  {
+    id: "usr-operator-01",
+    name: "Priya Sharma (Operator)",
+    email: "operator@urbancascade.gov",
+    password: "password123",
+    role: "Emergency Operator",
+    badge: "EOC-412",
+    department: "Central Emergency Dispatch"
+  },
+  {
+    id: "usr-citizen-01",
+    name: "Arjun Verma (Citizen)",
+    email: "citizen@urbancascade.gov",
+    password: "password123",
+    role: "Citizen",
+    badge: "CIT-882",
+    department: "Public User"
+  }
+];
+
+export const getLocalUsers = () => {
+  try {
+    const raw = localStorage.getItem("uc_users_db");
+    if (!raw) {
+      localStorage.setItem("uc_users_db", JSON.stringify(SEED_USERS));
+      return SEED_USERS;
+    }
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+  } catch (e) {}
+  localStorage.setItem("uc_users_db", JSON.stringify(SEED_USERS));
+  return SEED_USERS;
+};
+
+export const saveLocalUser = (newUser) => {
+  const users = getLocalUsers();
+  const existingIndex = users.findIndex(
+    (u) => (u.email || "").toLowerCase() === (newUser.email || "").toLowerCase()
+  );
+  if (existingIndex >= 0) {
+    users[existingIndex] = { ...users[existingIndex], ...newUser };
+  } else {
+    users.push(newUser);
+  }
+  try {
+    localStorage.setItem("uc_users_db", JSON.stringify(users));
+  } catch (e) {}
+  return newUser;
+};
+
 // Helper accessors for localStorage
 export const getLocalIncidents = () => {
   try {
