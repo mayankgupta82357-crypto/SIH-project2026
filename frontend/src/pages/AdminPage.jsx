@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Settings,
   Users,
@@ -7,29 +7,38 @@ import {
   Clock,
   CheckCircle2,
   Cpu,
-  Database
+  Database,
+  FileText,
+  MapPin,
+  AlertTriangle,
+  ExternalLink
 } from "lucide-react";
-import { adminAPI } from "../services/api";
+import { Link } from "react-router-dom";
+import { adminAPI, citizenAPI } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { SeverityPill } from "../components/common/StatusPill";
 
 export const AdminPage = () => {
   const { user } = useAuth();
   const [health, setHealth] = useState(null);
   const [usersList, setUsersList] = useState([]);
   const [logs, setLogs] = useState([]);
+  const [citizenReports, setCitizenReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAdminData = async () => {
       try {
-        const [hRes, uRes, lRes] = await Promise.all([
+        const [hRes, uRes, lRes, cRes] = await Promise.allSettled([
           adminAPI.getHealth(),
           adminAPI.getUsers(),
-          adminAPI.getLogs()
+          adminAPI.getLogs(),
+          citizenAPI.getReports()
         ]);
-        if (hRes.success) setHealth(hRes.data);
-        if (uRes.success) setUsersList(uRes.data);
-        if (lRes.success) setLogs(lRes.data);
+        if (hRes.status === "fulfilled" && hRes.value?.success) setHealth(hRes.value.data);
+        if (uRes.status === "fulfilled" && uRes.value?.success) setUsersList(uRes.value.data);
+        if (lRes.status === "fulfilled" && lRes.value?.success) setLogs(lRes.value.data);
+        if (cRes.status === "fulfilled" && cRes.value?.success) setCitizenReports(cRes.value.data);
       } catch (err) {
         console.error("Admin fetch error:", err);
       } finally {
@@ -144,6 +153,76 @@ export const AdminPage = () => {
                   </td>
                 </tr>
               ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Citizen Emergency Reports Ingestion Table */}
+      <div className="p-5 rounded-2xl bg-dark-900 border border-white/10 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+            <FileText className="w-4 h-4 text-emerald-400" />
+            Citizen Emergency Reports Database
+          </h3>
+          <span className="text-[10px] font-mono text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+            {citizenReports.length} Reports Logged
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs text-left">
+            <thead className="border-b border-white/10 font-mono text-[10px] text-slate-400 uppercase">
+              <tr>
+                <th className="pb-3">Report ID</th>
+                <th className="pb-3">Citizen Name</th>
+                <th className="pb-3">Contact</th>
+                <th className="pb-3">Type</th>
+                <th className="pb-3">Location</th>
+                <th className="pb-3">Severity</th>
+                <th className="pb-3">Status</th>
+                <th className="pb-3">Linked Incident</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {citizenReports.map((r) => (
+                <tr key={r.id} className="hover:bg-white/5 transition">
+                  <td className="py-3 font-mono font-bold text-cyan-400">{r.id}</td>
+                  <td className="py-3 text-white font-medium">{r.citizenName || "Anonymous"}</td>
+                  <td className="py-3 text-slate-400 font-mono">{r.contact || "N/A"}</td>
+                  <td className="py-3 text-slate-200">{r.type}</td>
+                  <td className="py-3 text-slate-300 max-w-[200px] truncate">{r.location}</td>
+                  <td className="py-3">
+                    <SeverityPill severity={r.severity || "Medium"} />
+                  </td>
+                  <td className="py-3">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                      Verified
+                    </span>
+                  </td>
+                  <td className="py-3 font-mono">
+                    {r.promotedToIncidentId ? (
+                      <Link
+                        to="/command-center/incidents"
+                        className="inline-flex items-center gap-1 text-cyan-400 hover:text-cyan-300 font-bold hover:underline"
+                      >
+                        <span>{r.promotedToIncidentId}</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </Link>
+                    ) : (
+                      <span className="text-slate-500">In Verification</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {citizenReports.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="py-6 text-center text-slate-400 font-mono">
+                    No citizen reports logged yet.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
