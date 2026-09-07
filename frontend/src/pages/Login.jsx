@@ -1,14 +1,28 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShieldAlert, Lock, Mail, ArrowRight, UserCheck, CheckCircle2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 export const Login = () => {
-  const [email, setEmail] = useState("admin@urbancascade.gov");
+  const [selectedRole, setSelectedRole] = useState("Citizen");
+  const [email, setEmail] = useState("citizen@urbancascade.gov");
   const [password, setPassword] = useState("password123");
   const [error, setError] = useState("");
   const { login, demoLogin, loading } = useAuth();
   const navigate = useNavigate();
+
+  const handleRoleTabClick = (role) => {
+    setSelectedRole(role);
+    if (role === "Citizen") {
+      setEmail("citizen@urbancascade.gov");
+    } else if (role === "Emergency Operator") {
+      setEmail("operator@urbancascade.gov");
+    } else {
+      setEmail("admin@urbancascade.gov");
+    }
+    setPassword("password123");
+    setError("");
+  };
 
   const handleRegularLogin = async (e) => {
     e.preventDefault();
@@ -38,7 +52,7 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-grid-pattern bg-radial-glow">
+    <div className="min-h-screen bg-dark-950 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 bg-grid-pattern bg-radial-glow">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <Link to="/" className="inline-flex items-center gap-2.5">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-0.5 shadow-lg shadow-cyan-500/25">
@@ -49,50 +63,76 @@ export const Login = () => {
           <span className="text-xl font-extrabold text-white">Urban Cascade</span>
         </Link>
         <h2 className="mt-4 text-2xl font-bold text-white tracking-tight">
-          Operational Portal Sign In
+          User & Operations Sign In
         </h2>
         <p className="mt-1 text-xs text-slate-400 font-mono">
-          Access the Command Center or Citizen Advisory Grid
+          Login as Citizen, Emergency Operator, or System Administrator
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-dark-900 border border-white/10 py-8 px-6 shadow-2xl rounded-2xl sm:px-10 space-y-6">
-          {/* 1-Click Demo Login Badges */}
-          <div className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-500/30 space-y-2.5">
-            <div className="text-[11px] font-mono text-cyan-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-              <UserCheck className="w-3.5 h-3.5" />
-              Fast 1-Click Demo Logins (No Setup Required)
-            </div>
-            <div className="grid grid-cols-3 gap-2 pt-1">
+      <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-dark-900 border border-white/10 py-8 px-5 sm:px-8 shadow-2xl rounded-2xl space-y-5 text-left">
+          {/* Role Selection Tabs */}
+          <div>
+            <label className="block text-[11px] font-mono text-slate-400 uppercase font-bold mb-2">
+              Select Your Role / Portal:
+            </label>
+            <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
-                onClick={() => handleDemoLogin("Admin")}
-                className="px-2 py-2 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-300 font-bold text-xs transition"
+                onClick={() => handleRoleTabClick("Citizen")}
+                className={`py-2 px-2 rounded-xl text-xs font-bold transition flex flex-col items-center gap-1 border ${
+                  selectedRole === "Citizen"
+                    ? "bg-emerald-500/20 border-emerald-500 text-emerald-300 shadow-md shadow-emerald-500/20"
+                    : "bg-dark-950 border-white/10 text-slate-400 hover:text-white"
+                }`}
               >
-                Demo Admin
+                <span>👤 Citizen</span>
+                <span className="text-[9px] font-mono opacity-75">Public User</span>
               </button>
+
               <button
                 type="button"
-                onClick={() => handleDemoLogin("Emergency Operator")}
-                className="px-2 py-2 rounded-lg bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/30 text-blue-300 font-bold text-xs transition"
+                onClick={() => handleRoleTabClick("Emergency Operator")}
+                className={`py-2 px-2 rounded-xl text-xs font-bold transition flex flex-col items-center gap-1 border ${
+                  selectedRole === "Emergency Operator"
+                    ? "bg-blue-500/20 border-blue-500 text-blue-300 shadow-md shadow-blue-500/20"
+                    : "bg-dark-950 border-white/10 text-slate-400 hover:text-white"
+                }`}
               >
-                Demo Operator
+                <span>🚨 Operator</span>
+                <span className="text-[9px] font-mono opacity-75">Dispatch HQ</span>
               </button>
+
               <button
                 type="button"
-                onClick={() => handleDemoLogin("Citizen")}
-                className="px-2 py-2 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 font-bold text-xs transition"
+                onClick={() => handleRoleTabClick("Admin")}
+                className={`py-2 px-2 rounded-xl text-xs font-bold transition flex flex-col items-center gap-1 border ${
+                  selectedRole === "Admin"
+                    ? "bg-cyan-500/20 border-cyan-500 text-cyan-300 shadow-md shadow-cyan-500/20"
+                    : "bg-dark-950 border-white/10 text-slate-400 hover:text-white"
+                }`}
               >
-                Demo Citizen
+                <span>🛡️ Admin</span>
+                <span className="text-[9px] font-mono opacity-75">Full Access</span>
               </button>
             </div>
           </div>
 
+          {/* Quick 1-Click Login Button */}
+          <button
+            type="button"
+            onClick={() => handleDemoLogin(selectedRole)}
+            className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:opacity-95 text-white font-extrabold text-xs flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-500/20"
+          >
+            <UserCheck className="w-4 h-4" />
+            <span>1-Click Instant Sign In as {selectedRole}</span>
+          </button>
+
           <div className="relative flex items-center justify-center">
             <div className="border-t border-white/10 w-full"></div>
-            <span className="bg-dark-900 px-3 text-[11px] font-mono text-slate-400 uppercase">
-              Or Sign In Manually
+            <span className="bg-dark-900 px-3 text-[10px] font-mono text-slate-400 uppercase">
+              Or Sign In With Password
             </span>
           </div>
 

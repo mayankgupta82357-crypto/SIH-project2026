@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Search, Bell, Shield, Clock, User, CheckCircle2, AlertTriangle, Menu } from "lucide-react";
+import { Search, Bell, Shield, Clock, User, CheckCircle2, AlertTriangle, Menu, LogIn } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useIncidents } from "../../context/IncidentContext";
 import { Link } from "react-router-dom";
@@ -129,15 +129,32 @@ export const Header = ({ onToggleSidebar }) => {
           )}
         </div>
 
-        {/* User Profile Info */}
-        <div className="flex items-center gap-3 pl-3 border-l border-white/10">
-          <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 font-bold text-xs">
-            {user?.name ? user.name.slice(0, 2).toUpperCase() : "OP"}
-          </div>
-          <div className="hidden sm:block text-left">
-            <div className="text-xs font-bold text-slate-200 leading-tight">{user?.name || "Emergency Operator"}</div>
-            <div className="text-[10px] text-cyan-400 font-mono font-medium">{user?.role || "Operator"}</div>
-          </div>
+        {/* User Profile Info & Sign In / Switch Role */}
+        <div className="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-white/10">
+          <Link
+            to="/login"
+            className="flex items-center gap-2 group hover:opacity-90 transition"
+            title="Click to Switch Role or Sign In"
+          >
+            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 font-bold text-xs group-hover:border-cyan-400">
+              {user?.name ? user.name.slice(0, 2).toUpperCase() : "OP"}
+            </div>
+            <div className="hidden sm:block text-left">
+              <div className="text-xs font-bold text-slate-200 leading-tight group-hover:text-white flex items-center gap-1">
+                <span>{user?.name || "Emergency Operator"}</span>
+              </div>
+              <div className="text-[10px] text-cyan-400 font-mono font-medium">{user?.role || "Operator"}</div>
+            </div>
+          </Link>
+
+          <Link
+            to="/login"
+            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-xs transition flex items-center gap-1"
+            title="Sign In / Switch Role"
+          >
+            <LogIn className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="hidden md:inline text-[11px] font-mono">Login</span>
+          </Link>
         </div>
       </div>
     </header>

@@ -14,7 +14,8 @@ import {
   Zap,
   Radio,
   ShieldAlert,
-  X
+  X,
+  LogIn
 } from "lucide-react";
 import { useIncidents } from "../../context/IncidentContext";
 
@@ -32,7 +33,8 @@ export const Sidebar = ({ isOpen, onClose }) => {
     { name: "Response Units", href: "/command-center/units", icon: Truck, badge: `${metrics.activeUnits}/${metrics.totalUnits}` },
     { name: "Analytics", href: "/command-center/analytics", icon: BarChart3 },
     { name: "Citizen Reports", href: "/citizen", icon: Users },
-    { name: "Admin Panel", href: "/command-center/admin", icon: Settings }
+    { name: "Admin Panel", href: "/command-center/admin", icon: Settings },
+    { name: "Sign In / Switch Role", href: "/login", icon: LogIn, highlight: true }
   ];
 
   return (

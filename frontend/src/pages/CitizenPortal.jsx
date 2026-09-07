@@ -133,14 +133,21 @@ export const CitizenPortal = () => {
           </div>
         </Link>
 
-        <div className="flex items-center gap-1.5 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           <a
             href="#tracking-section"
-            className="text-[11px] sm:text-xs px-2 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 font-semibold transition flex items-center gap-1 sm:gap-1.5"
+            className="text-[11px] sm:text-xs px-2 sm:px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 font-semibold transition flex items-center gap-1"
           >
             <FileText className="w-3.5 h-3.5 text-cyan-400" />
             <span>Track ({reportsList.length})</span>
           </a>
+
+          <Link
+            to="/login"
+            className="text-[11px] sm:text-xs px-2 sm:px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 font-semibold transition"
+          >
+            Sign In
+          </Link>
 
           <Link
             to="/command-center"
