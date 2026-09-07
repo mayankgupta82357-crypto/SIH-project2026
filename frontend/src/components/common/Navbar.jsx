@@ -1,6 +1,6 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ShieldAlert, Zap, Menu, X, ArrowRight, Layers, MapPin } from "lucide-react";
+import { ShieldAlert, Zap, Menu, X, ArrowRight, Layers, MapPin, LogIn, Users } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 export const Navbar = () => {
@@ -10,10 +10,10 @@ export const Navbar = () => {
 
   const navLinks = [
     { label: "Home", href: "/" },
+    { label: "Citizen Portal", href: "/citizen" },
     { label: "How It Works", href: "/#how-it-works" },
     { label: "Features", href: "/#features" },
-    { label: "Technology", href: "/#technology" },
-    { label: "About", href: "/#about" }
+    { label: "Technology", href: "/#technology" }
   ];
 
   return (
@@ -38,7 +38,7 @@ export const Navbar = () => {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <a
                 key={link.label}
@@ -50,48 +50,41 @@ export const Navbar = () => {
             ))}
           </nav>
 
-          {/* Action CTAs */}
+          {/* Action CTAs (Desktop) */}
           <div className="hidden md:flex items-center gap-3">
-            {user ? (
-              <div className="flex items-center gap-3">
-                <Link
-                  to="/command-center"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 text-xs font-semibold hover:bg-cyan-500/20 transition-all shadow-sm shadow-cyan-500/20"
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  Command Center
-                </Link>
-                <button
-                  onClick={logout}
-                  className="px-3 py-1.5 text-xs text-slate-400 hover:text-white transition"
-                >
-                  Log Out
-                </button>
-              </div>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/command-center"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold hover:from-cyan-400 hover:to-blue-500 transition shadow-lg shadow-cyan-500/25"
-                >
-                  Get Started
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </>
-            )}
+            {/* Always Visible Sign In Button */}
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 border border-white/15 text-xs font-semibold transition hover:border-cyan-500/40"
+              title="Sign In as Citizen, Operator, or Admin"
+            >
+              <LogIn className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Sign In / Login</span>
+            </Link>
+
+            <Link
+              to="/command-center"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold hover:from-cyan-400 hover:to-blue-500 transition shadow-lg shadow-cyan-500/25"
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>Command Center</span>
+            </Link>
           </div>
 
-          {/* Mobile hamburger */}
-          <div className="md:hidden">
+          {/* Mobile Actions: Direct Sign In + Hamburger */}
+          <div className="flex items-center gap-2 md:hidden">
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-bold shadow-sm shadow-cyan-500/20"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Sign In</span>
+            </Link>
+
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10"
+              title="Toggle Menu"
             >
               {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -114,9 +107,17 @@ export const Navbar = () => {
           ))}
           <div className="pt-4 border-t border-white/10 flex flex-col gap-2">
             <Link
+              to="/login"
+              onClick={() => setMobileOpen(false)}
+              className="w-full text-center py-2.5 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 font-bold text-sm flex items-center justify-center gap-2"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Sign In / Login (Citizen, Operator, Admin)</span>
+            </Link>
+            <Link
               to="/command-center"
               onClick={() => setMobileOpen(false)}
-              className="w-full text-center py-2.5 rounded-lg bg-cyan-500 text-dark-950 font-bold text-sm"
+              className="w-full text-center py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-dark-950 font-bold text-sm"
             >
               Launch Command Center
             </Link>
@@ -125,7 +126,7 @@ export const Navbar = () => {
               onClick={() => setMobileOpen(false)}
               className="w-full text-center py-2.5 rounded-lg bg-white/10 text-white font-medium text-sm hover:bg-white/20"
             >
-              Citizen Portal
+              Citizen Emergency Portal
             </Link>
           </div>
         </div>
