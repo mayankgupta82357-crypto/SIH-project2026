@@ -122,36 +122,36 @@ export const CitizenPortal = () => {
   return (
     <div className="min-h-screen bg-dark-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-white">
       {/* Citizen Top Bar */}
-      <header className="h-16 border-b border-white/10 bg-dark-900/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-40">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center font-bold text-white shadow-md shadow-emerald-500/20">
+      <header className="h-16 border-b border-white/10 bg-dark-900/90 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-40 gap-2">
+        <Link to="/" className="flex items-center gap-2 sm:gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center font-bold text-white shadow-md shadow-emerald-500/20 flex-shrink-0">
             <Users className="w-4 h-4" />
           </div>
           <div>
-            <span className="font-extrabold text-sm text-white">Urban Cascade</span>
-            <span className="text-[10px] text-emerald-400 font-mono block -mt-1">Citizen Emergency Portal</span>
+            <span className="font-extrabold text-xs sm:text-sm text-white">Urban Cascade</span>
+            <span className="text-[9px] sm:text-[10px] text-emerald-400 font-mono block -mt-0.5 sm:-mt-1">Citizen Portal</span>
           </div>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           <a
             href="#tracking-section"
-            className="text-xs px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 font-semibold transition flex items-center gap-1.5"
+            className="text-[11px] sm:text-xs px-2 sm:px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 font-semibold transition flex items-center gap-1 sm:gap-1.5"
           >
             <FileText className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Track Reports ({reportsList.length})</span>
+            <span>Track ({reportsList.length})</span>
           </a>
 
           <Link
             to="/command-center"
-            className="text-xs px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold transition"
+            className="text-[11px] sm:text-xs px-2 sm:px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-semibold transition"
           >
             Command Center →
           </Link>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1 text-left w-full">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8 flex-1 text-left w-full">
         {/* Banner */}
         <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-dark-900 to-dark-900 border border-emerald-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>

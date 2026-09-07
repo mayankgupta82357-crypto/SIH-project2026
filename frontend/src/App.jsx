@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React, { useState } from "react";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { Sidebar } from "./components/common/Sidebar";
 import { Header } from "./components/common/Header";
@@ -21,12 +21,14 @@ import { AdminPage } from "./pages/AdminPage";
 
 // Command Center Layout Wrapper
 const CommandCenterLayout = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-dark-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-white">
-      <Header />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
-        <main className="flex-1 p-6 overflow-y-auto bg-grid-pattern bg-radial-glow">
+      <Header onToggleSidebar={() => setSidebarOpen((prev) => !prev)} />
+      <div className="flex flex-1 overflow-hidden relative">
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-y-auto bg-grid-pattern bg-radial-glow w-full min-w-0">
           <Outlet />
         </main>
       </div>

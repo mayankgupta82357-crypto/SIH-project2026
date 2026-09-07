@@ -1,10 +1,10 @@
-﻿import React, { useState, useEffect } from "react";
-import { Search, Bell, Shield, Clock, User, CheckCircle2, AlertTriangle } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Search, Bell, Shield, Clock, User, CheckCircle2, AlertTriangle, Menu } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useIncidents } from "../../context/IncidentContext";
 import { Link } from "react-router-dom";
 
-export const Header = () => {
+export const Header = ({ onToggleSidebar }) => {
   const { user, logout } = useAuth();
   const { alerts, acknowledgeAlert } = useIncidents();
   const [timeStr, setTimeStr] = useState("");
@@ -31,17 +31,26 @@ export const Header = () => {
   const unreadAlerts = alerts.filter(a => !a.acknowledged);
 
   return (
-    <header className="h-16 border-b border-white/10 bg-dark-900/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-40">
-      {/* Search Input */}
-      <div className="flex items-center gap-3 w-96">
+    <header className="h-16 border-b border-white/10 bg-dark-900/90 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-40 gap-2">
+      {/* Left: Hamburger button + Search */}
+      <div className="flex items-center gap-2 sm:gap-3 flex-1 max-w-[200px] sm:max-w-xs md:max-w-sm lg:w-96">
+        <button
+          type="button"
+          onClick={onToggleSidebar}
+          className="lg:hidden p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition flex-shrink-0"
+          title="Toggle Navigation Menu"
+        >
+          <Menu className="w-5 h-5 text-cyan-400" />
+        </button>
+
         <div className="relative w-full">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search incident ID, arterial road, or landmark..."
+            placeholder="Search incidents, roads..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-1.5 text-xs bg-dark-950/70 border border-white/10 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500/50"
+            className="w-full pl-9 pr-3 py-1.5 text-xs bg-dark-950/70 border border-white/10 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500/50"
           />
         </div>
       </div>

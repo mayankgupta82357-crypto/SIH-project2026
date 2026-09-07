@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   MapPin,
@@ -58,7 +58,7 @@ export const LiveMapPage = () => {
       {/* Map Layout Grid: Large Map + Selected Incident Drawer */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Full Interactive Map */}
-        <div className="lg:col-span-8 h-[600px]">
+        <div className="lg:col-span-8 h-[360px] sm:h-[480px] lg:h-[600px] w-full rounded-2xl overflow-hidden shadow-2xl">
           <CityMap
             incidents={filteredIncidents}
             units={units}
@@ -69,7 +69,7 @@ export const LiveMapPage = () => {
         </div>
 
         {/* Selected Incident Drawer */}
-        <div className="lg:col-span-4 h-[600px] rounded-2xl bg-dark-900 border border-white/10 p-5 flex flex-col justify-between overflow-y-auto">
+        <div className="lg:col-span-4 min-h-[360px] lg:h-[600px] rounded-2xl bg-dark-900 border border-white/10 p-4 sm:p-5 flex flex-col justify-between overflow-y-auto">
           {activeSelected ? (
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-white/10">
